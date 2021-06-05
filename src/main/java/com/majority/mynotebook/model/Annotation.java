@@ -1,6 +1,7 @@
 package com.majority.mynotebook.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,7 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import com.majority.mynotebook.model.form.AnnotationForm;
 
 @Entity
 public class Annotation {
@@ -22,23 +23,22 @@ public class Annotation {
 	private String title;
 	private String content;
 	private LocalDateTime creationDate;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Category category;
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	private List<Tag> tags;
+	private String status;
 	private Long userId;
 	
 	public Annotation() {
 	}
 	
-	public Annotation(Long id, String title, String content, Category category, List<Tag> tags, Long userId) {
-		this.id = id;
-		this.title = title;
-		this.content = content;
+	public Annotation(AnnotationForm annotationForm) {
+		this.title = annotationForm.getTitle();
+		this.content = annotationForm.getContent();
 		this.creationDate = LocalDateTime.now();
-		this.category = category;
-		this.tags = tags;
-		this.userId = userId;
+		this.status = "ACTIVE";
+		this.tags = new ArrayList<Tag>();
 	}
 	
 	public Annotation(Long id, String title, String content, LocalDateTime creationDate,Category category, List<Tag> tags, Long userId) {
@@ -93,6 +93,16 @@ public class Annotation {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	
-	
+	public void addTag(Tag tag) {
+		this.tags.add(tag);
+	}
 }
