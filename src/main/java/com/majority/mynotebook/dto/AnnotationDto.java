@@ -16,6 +16,7 @@ public class AnnotationDto {
 	private LocalDateTime creationDate;
 	private Category category;
 	private List<Tag> tags;
+	private String status;
 	
 	public AnnotationDto(Annotation annotation) {
 		this.id = annotation.getId();
@@ -24,6 +25,7 @@ public class AnnotationDto {
 		this.creationDate = annotation.getCreationDate();
 		this.category = annotation.getCategory();
 		this.tags = annotation.getTags();
+		this.status = annotation.getStatus();
 	}
 	
 	
@@ -47,6 +49,10 @@ public class AnnotationDto {
 	}
 	public List<Tag> getTags() {
 		return tags;
+	}
+	
+	public String getStatus() {
+		return status;
 	}
 	
 	public List<AnnotationDto> convertList(List<Annotation> annotations){
