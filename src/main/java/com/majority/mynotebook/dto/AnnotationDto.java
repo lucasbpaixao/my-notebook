@@ -16,7 +16,7 @@ public class AnnotationDto {
 	private LocalDateTime creationDate;
 	private Category category;
 	private List<Tag> tags;
-	private String status;
+	private Enum status;
 	
 	public AnnotationDto(Annotation annotation) {
 		this.id = annotation.getId();
@@ -51,7 +51,7 @@ public class AnnotationDto {
 		return tags;
 	}
 	
-	public String getStatus() {
+	public Enum getStatus() {
 		return status;
 	}
 	

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.majority.mynotebook.dto.AnnotationDto;
+import com.majority.mynotebook.enums.Status;
 import com.majority.mynotebook.model.Annotation;
 import com.majority.mynotebook.model.Category;
 import com.majority.mynotebook.model.Tag;
@@ -49,7 +50,7 @@ public class AnnotationController {
 	
 	@GetMapping("/{status}")
 	public List<AnnotationDto> getAnnotationsByStatus(@PathVariable String status) {
-		List<Annotation> queryResult = repository.findByStatus(status);
+		List<Annotation> queryResult = repository.findByStatus(Status.valueOf(status));
 
 		List<AnnotationDto> annotations = new AnnotationDto().convertList(queryResult);
 		return annotations;
@@ -72,24 +73,6 @@ public class AnnotationController {
 		return ResponseEntity.created(uri).body(annotation);
 	}
 	
-	
-	@DeleteMapping("/trash/{id}")
-	@Transactional
-	public ResponseEntity<Annotation> trash(@PathVariable Long id){
-		
-		Optional<Annotation> annotationOptional =  repository.findById(id);
-		
-		if(annotationOptional.isPresent()){
-			
-			Annotation annotation = annotationOptional.get();
-			annotation.setStatus("TRASH");
-			
-			repository.flush();
-			return ResponseEntity.ok().build();
-		}
-		
-		return ResponseEntity.notFound().build();
-	}
 	
 	
 	@DeleteMapping("/definitive-delete/{id}")
@@ -118,7 +101,7 @@ public class AnnotationController {
 	@Transactional
 	public ResponseEntity<Annotation> cleanTrash(){
 		
-		List<Annotation> annotations =  repository.findByStatus("TRASH");
+		List<Annotation> annotations =  repository.findByStatus(Status.TRASH);
 		
 		for (Annotation annotation : annotations) {
 			annotation.setTags(new ArrayList<Tag>());
@@ -132,17 +115,30 @@ public class AnnotationController {
 		return ResponseEntity.ok().build();
 	}
 	
-	//Fazer resore all e funções de arquivar antes de montar a interface grafica
-	
-	@PutMapping("/restore/{id}")
+	@PutMapping("/restore-all")
 	@Transactional
-	public ResponseEntity<Annotation> restore(@PathVariable Long id){
+	public ResponseEntity<Annotation> restoreAll(){
+		
+		List<Annotation> annotations =  repository.findByStatus(Status.TRASH);
+		
+		for (Annotation annotation : annotations) {
+			annotation.setStatus(Status.ACTIVE);
+			
+			repository.flush();
+		}
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	@PutMapping("/update-status/{status}/{id}")
+	@Transactional
+	public ResponseEntity<Annotation> updateStatus(@PathVariable Long id, @PathVariable String status){
 		Optional<Annotation> annotationOptional = repository.findById(id);
 		
 		if(annotationOptional.isPresent()){
 			
 			Annotation annotation = annotationOptional.get();
-			annotation.setStatus("ACTIVE");
+			annotation.setStatus(Status.valueOf(status));
 			
 			repository.flush();
 			return ResponseEntity.ok().build();
@@ -150,20 +146,5 @@ public class AnnotationController {
 		
 		return ResponseEntity.notFound().build();
 		
-	}
-	
-	@PutMapping("/restore-all")
-	@Transactional
-	public ResponseEntity<Annotation> restoreAll(){
-		
-		List<Annotation> annotations =  repository.findByStatus("TRASH");
-		
-		for (Annotation annotation : annotations) {
-			annotation.setStatus("ACTIVE");
-			
-			repository.flush();
-		}
-		
-		return ResponseEntity.ok().build();
 	}
 }
