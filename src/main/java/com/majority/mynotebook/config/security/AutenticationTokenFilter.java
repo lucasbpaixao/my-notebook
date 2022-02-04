@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.majority.mynotebook.model.User;
+import com.majority.mynotebook.model.UserModel;
 import com.majority.mynotebook.repository.UserRepository;
 
 public class AutenticationTokenFilter extends OncePerRequestFilter{
@@ -39,7 +39,7 @@ public class AutenticationTokenFilter extends OncePerRequestFilter{
 	
 	private void authenticate(String token) {
 		Long userId = tokenService.getUserId(token);
-		User user = repository.findById(userId).get();
+		UserModel user = repository.findById(userId).get();
 		
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.majority.mynotebook.model.User;
+import com.majority.mynotebook.model.UserModel;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,7 +23,7 @@ public class TokenService {
 	private String secret;
 
 	public String generateToken(Authentication authentication) {
-		User user = (User) authentication.getPrincipal();
+		UserModel user = (UserModel) authentication.getPrincipal();
 		Date today = new Date();
 		Date expirationDate = new Date(today.getTime() + Long.parseLong(expiration));
 

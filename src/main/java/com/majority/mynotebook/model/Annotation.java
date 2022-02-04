@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+
+import com.majority.mynotebook.enums.Status;
 import com.majority.mynotebook.model.form.AnnotationForm;
 
 @Entity
@@ -27,7 +29,7 @@ public class Annotation {
 	private Category category;
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	private List<Tag> tags;
-	private String status;
+	private Enum status;
 	private Long userId;
 	
 	public Annotation() {
@@ -37,7 +39,7 @@ public class Annotation {
 		this.title = annotationForm.getTitle();
 		this.content = annotationForm.getContent();
 		this.creationDate = LocalDateTime.now();
-		this.status = "ACTIVE";
+		this.status = Status.ACTIVE;
 		this.tags = new ArrayList<Tag>();
 	}
 	
@@ -94,11 +96,11 @@ public class Annotation {
 		this.userId = userId;
 	}
 
-	public String getStatus() {
+	public Enum getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Enum status) {
 		this.status = status;
 	}
 	
